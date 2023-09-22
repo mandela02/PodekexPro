@@ -17,11 +17,13 @@ public struct ImageStickyHeaderView<
     public init(
         headerHeight: CGFloat,
         isHeaderHidden: Binding<Bool>,
+        percentHeaderHidden: Binding<CGFloat>,
         content: @escaping () -> Content,
         header: @escaping () -> Header
     ) {
         self.headerHeight = headerHeight
         self._isHeaderHidden = isHeaderHidden
+        self._percentHeaderHidden = percentHeaderHidden
         self.content = content
         self.header = header
     }
@@ -33,10 +35,13 @@ public struct ImageStickyHeaderView<
     @Binding
     private var isHeaderHidden: Bool
 
+    @Binding
+    var percentHeaderHidden: CGFloat
+
     public var body: some View {
         VStack(spacing: 0) {
             ScrollView(showsIndicators: false) {
-                VStack {
+                VStack(spacing: 0) {
                     imagesView
 
                     content()
@@ -46,7 +51,6 @@ public struct ImageStickyHeaderView<
             }
 
         }
-        .animation(.easeInOut(duration: 0.15), value: isHeaderHidden)
     }
 }
 
@@ -68,6 +72,7 @@ extension ImageStickyHeaderView {
                     of: height,
                     { oldValue, newValue in
                         isHeaderHidden = newValue < 0
+                        percentHeaderHidden = max(0, newValue / headerHeight)
                     }
                 )
         }

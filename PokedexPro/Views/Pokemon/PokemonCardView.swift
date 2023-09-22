@@ -71,8 +71,8 @@ struct PokemonCardView: View {
                 selected = pokemon
             }
         }
-        .id(pokemon.id)
-        .transition(.scale(1).combined(with: .opacity))
+        .id(pokemon)
+        .transition(.scale(1))
     }
 }
 

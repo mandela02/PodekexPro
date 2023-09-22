@@ -42,55 +42,60 @@ struct PokemonsView: View {
                     }
 
                 VStack {
-                    ScrollView(
-                        showsIndicators: false
-                    ) {
-                        LazyVGrid(
-                            columns: [
-                                GridItem(
-                                    .flexible(
-                                        minimum: 0,
-                                        maximum: 500
+                    ScrollViewReader { reader in
+                        ScrollView(
+                            showsIndicators: false
+                        ) {
+                            LazyVGrid(
+                                columns: [
+                                    GridItem(
+                                        .flexible(
+                                            minimum: 0,
+                                            maximum: 500
+                                        ),
+                                        spacing: 5,
+                                        alignment: .center
                                     ),
-                                    spacing: 5,
-                                    alignment: .center
-                                ),
-                                GridItem(
-                                    .flexible(
-                                        minimum: 0,
-                                        maximum: 500
-                                    ),
-                                    spacing: 5,
-                                    alignment: .center
-                                )
-                            ],
-                            alignment: .center,
-                            spacing: 5,
-                            content: {
-                                ForEach(viewModel.pokemons) { model in
-                                    if selected != nil {
-                                        Color.clear
-                                            .frame(height: (size.width - 15) / 2 * 0.7 )
-                                    } else {
-                                        PokemonCardView(
-                                            pokemon: model,
-                                            selected: $selected,
-                                            animation: animation
-                                        )
-                                        .frame(height: (size.width - 15) / 2 * 0.7 )
-                                        .onAppear {
-                                            if viewModel.pokemons.suffix(5).contains(model) {
-                                                viewModel.loadMoreIfNeed(context: modelContext)
+                                    GridItem(
+                                        .flexible(
+                                            minimum: 0,
+                                            maximum: 500
+                                        ),
+                                        spacing: 5,
+                                        alignment: .center
+                                    )
+                                ],
+                                alignment: .center,
+                                spacing: 5,
+                                content: {
+                                    ForEach(viewModel.pokemons) { model in
+                                        if selected == model {
+                                            Color.white
+                                                .frame(height: max(size.width - 15, 0) / 2 * 0.7 )
+                                        } else {
+                                            PokemonCardView(
+                                                pokemon: model,
+                                                selected: $selected,
+                                                animation: animation
+                                            )
+                                            .frame(height: max(size.width - 15, 0) / 2 * 0.7 )
+                                            .onAppear {
+                                                if viewModel.pokemons.suffix(5).contains(model) {
+                                                    viewModel.loadMoreIfNeed(context: modelContext)
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
-                        )
-                        .padding(.all, 5)
+                            )
+                            .padding(.all, 5)
+                        }
+                        .scrollTargetLayout(isEnabled: true)
+                        .scrollTargetBehavior(.viewAligned)
+                        .onChange(of: selected, { oldValue, newValue in
+                            reader.scrollTo(newValue)
+                        })
                     }
-                    .scrollTargetLayout(isEnabled: true)
-                    .scrollTargetBehavior(.viewAligned)
                 }
             }
             .onAppear {
@@ -103,14 +108,10 @@ struct PokemonsView: View {
         .overlay {
             if selected != nil {
                 PokemonDetailView(
-                    pokemon: $selected,
+                    selected: $selected,
+                    viewModel: viewModel,
                     animation: animation
                 )
-                .onTapGesture {
-                    withAnimation(.interactiveSpring(response: 0.6, dampingFraction: 0.85, blendDuration: 0.25)) {
-                        self.selected = nil
-                    }
-                }
             }
         }
     }
