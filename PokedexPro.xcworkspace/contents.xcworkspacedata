@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:Common/Common/Common.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:NetworkPlatform/NetworkPlatform/NetworkPlatform.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:DatabasePlatform/DatabasePlatform/DatabasePlatform.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Domain/Domain/Domain.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "container:PokedexPro.xcodeproj">
+   </FileRef>
+</Workspace>
